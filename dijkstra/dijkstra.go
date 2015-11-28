@@ -100,7 +100,7 @@ func findByCityAndState(nodes []*Node, city, state string) (*Node, error) {
 
 // Load Nodes from file
 func loadNodes () ([]*Node, map[string]*Node) {
-    nodes := make([]*Node, 0, 50000)
+    nodes := make([]*Node, 0, 100000)
     mapNode := make(map[string]*Node)
     file, err := os.Open("data/nhpn.nod")
     if err != nil {
@@ -145,7 +145,7 @@ func loadNodes () ([]*Node, map[string]*Node) {
 
 // Load links from file
 func loadLinks(mapNode map[string]*Node) ([]Link) {
-    links := make([]Link, 0, 260000)
+    links := make([]Link, 0, 126000)
 
     file, err := os.Open("data/nhpn.lnk")
     if err != nil {
