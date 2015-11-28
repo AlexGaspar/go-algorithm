@@ -145,7 +145,7 @@ func loadNodes () ([]*Node, map[string]*Node) {
 
 // Load links from file
 func loadLinks(mapNode map[string]*Node) ([]Link) {
-    links := make([]Link, 0, 260000) // Check slice/array insert O(?) ?
+    links := make([]Link, 0, 260000)
 
     file, err := os.Open("data/nhpn.lnk")
     if err != nil {
@@ -168,6 +168,16 @@ func loadLinks(mapNode map[string]*Node) ([]Link) {
     return links
 }
 
+func reverse_path(nodes []*Node) ([]*Node) {
+    for i, j := 0, len(nodes)-1; i < j; i, j = i+1, j-1 {
+        tmp := nodes[i]
+        nodes[i] = nodes[j]
+        nodes[j] = tmp
+    }
+
+    return nodes
+}
+
 func dijkstra (nodes []*Node, source, destination *Node) ([]*Node) {
     // Set all nodes to be at '+infinity' distance from source
     for _, node := range nodes {
@@ -187,7 +197,7 @@ func dijkstra (nodes []*Node, source, destination *Node) ([]*Node) {
     for len(pq) != 0 {
         node := heap.Pop(&pq).(*DistanceNode).to
 
-        if node.id == destination.id { fmt.Println("Fini"); break }
+        if node.id == destination.id { break }
 
         for _, next_node := range node.adjacency {
             next_dist := node.dist + node.distance(next_node)
@@ -215,11 +225,11 @@ func dijkstra (nodes []*Node, source, destination *Node) ([]*Node) {
         destination = destination.parent
     }
 
-    //        fmt.Printf("%f,%f\n",float64(destination.longitude) / 1000000., float64(destination.latitude) / 1000000.)
-    return path
+    return reverse_path(path)
+
 }
 
-func FileLoader () ([]*Node) {
+func FilesLoader () ([]*Node) {
     nodes, mapNode := loadNodes()
 
     // Populate nodes adjacency list
@@ -234,7 +244,7 @@ func FileLoader () ([]*Node) {
 
 
 func main() {
-    nodes := FileLoader()
+    nodes := FilesLoader()
 
     start, err := findByCityAndState(nodes, "PASADENA", "CA")
     if err != nil { log.Fatal(err); return }
