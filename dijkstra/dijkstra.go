@@ -47,12 +47,13 @@ func (pq *PriorityQueue) Pop() interface{} {
     item := old[n-1]
     item.index = -1 // for safety
     *pq = old[0 : n-1]
+
     return item
 }
 
 // update modifies the priority and value of an Item in the queue.
-func (pq *PriorityQueue) update(item *DistanceNode) {
-    heap.Fix(pq, item.index)
+func (pq *PriorityQueue) update(node *DistanceNode) {
+    heap.Fix(pq, node.index)
 }
 
 
@@ -179,6 +180,10 @@ func reverse_path(nodes []*Node) ([]*Node) {
 }
 
 func dijkstra (nodes []*Node, source, destination *Node) ([]*Node) {
+    // Store DistanceNode in a map to be able
+    // to retrieve the index of a given in the queue
+    distNodes := make(map[string]*DistanceNode)
+
     // Set all nodes to be at '+infinity' distance from source
     for _, node := range nodes {
         node.dist = math.MaxInt32
@@ -208,10 +213,16 @@ func dijkstra (nodes []*Node, source, destination *Node) ([]*Node) {
                 next_node.parent = node
 
                 tmp := &DistanceNode{to: next_node}
+
+                distNodes[next_node.id] = tmp
                 heap.Push(&pq, tmp)
             } else if next_node.dist > next_dist {
                 // Relaxation
                 next_node.dist = next_dist
+
+                // Decrease_key
+                pq.update(distNodes[next_node.id])
+
                 next_node.parent = node
             }
         }
