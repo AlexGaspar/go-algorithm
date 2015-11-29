@@ -182,7 +182,7 @@ func reverse_path(nodes []*Node) ([]*Node) {
 func dijkstra (nodes []*Node, source, destination *Node) ([]*Node) {
     // Store DistanceNode in a map to be able
     // to retrieve the index of a given in the queue
-    distNodes := make(map[string]*DistanceNode)
+    distNodes := make(map[string]*DistanceNode, 100000)
 
     // Set all nodes to be at '+infinity' distance from source
     for _, node := range nodes {
